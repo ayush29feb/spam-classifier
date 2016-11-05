@@ -1,18 +1,10 @@
+import os
+
+HAM_TRAIN_DIR = 'data/train/ham/'
+SPAM_TRAIN_DIR = 'data/train/spam/'
+
 # This function reads in a file and returns a 
 # set of all the tokens. It ignores the subject line
-
-# If the email had the following content:
-
-# Subject: Get rid of your student loans
-# Hi there,
-# If you work for us, we will give you money
-# to repay your student loans. You will be
-# debt free!
-# FakePerson_22393
-
-# This function would return to you
-# set(['', 'work', 'give', 'money', 'rid', 'your', 'there,', 'for', 'Get', 'to', 'Hi', 'you', 'be', 'we', 'student', 'debt', 'loans', 'loans.', 'of', 'us,', 'will', 'repay', 'FakePerson_22393', 'free!', 'You', 'If'])
-
 def token_set(filename):
 	#open the file handle
 	with open(filename, 'r') as f:
@@ -26,4 +18,13 @@ def token_set(filename):
 		#return the set of unique tokens
 		return set(tokens)
 
-# TODO: Implement the Naive Bayes Classifier
+def p_ham_spam():
+  ham = len(os.listdir(HAM_TRAIN_DIR)) * 1.0
+  spam = len(os.listdir(SPAM_TRAIN_DIR)) * 1.0
+  return ham / (ham + spam), spam / (ham + spam)
+
+p_ham, p_spam = p_ham_spam()
+
+print 'Pr(Ham) = ' + str(p_ham)
+print 'Pr(Spam) = ' + str(p_spam)
+print 'Pr(Ham) + Pr(Spam) = ' + str(p_ham + p_spam)
