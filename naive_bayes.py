@@ -39,15 +39,7 @@ def p_w(word, words_count, email_count, mem):
   mem[word] = ret
   return ret
 
-def classify(filename):
-  ham_count = len(os.listdir(HAM_TRAIN_DIR)) * 1.0
-  spam_count = len(os.listdir(SPAM_TRAIN_DIR)) * 1.0
-  ham_words = read_emails(HAM_TRAIN_DIR)
-  spam_words = read_emails(SPAM_TRAIN_DIR)
-  
-  ham_p_mem = {}
-  spam_p_mem = {}
-
+def classify(filename, ham_words, spam_words, ham_count, spam_count, ham_p_mem, spam_p_mem):
   tokens = token_set(filename)
   prod_tokens_ham = math.log(ham_count / (ham_count + spam_count))
   prod_tokens_spam = math.log(spam_count / (ham_count + spam_count))
@@ -58,9 +50,15 @@ def classify(filename):
   return prod_tokens_spam > (math.log(9) + prod_tokens_ham)
 
 def test():
+  ham_count = len(os.listdir(HAM_TRAIN_DIR)) * 1.0
+  spam_count = len(os.listdir(SPAM_TRAIN_DIR)) * 1.0
+  ham_words = read_emails(HAM_TRAIN_DIR)
+  spam_words = read_emails(SPAM_TRAIN_DIR)
+  ham_p_mem = {}
+  spam_p_mem = {}
+ 
   emails = sorted(os.listdir(TEST_DIR), key=lambda x: int(x[:len(x) - 4]))
   for email in emails:
-    print email + (' spam' if classify(TEST_DIR + email) else ' ham')
+    print email + (' spam' if classify(TEST_DIR + email, ham_words, spam_words, ham_count, spam_count, ham_p_mem, spam_p_mem) else ' ham')
 
 test()
-
