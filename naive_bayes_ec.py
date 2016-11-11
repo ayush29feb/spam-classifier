@@ -94,4 +94,4 @@ def spamminess():
   print low_w
 
 test()
-# spamminess()
+spamminess()
