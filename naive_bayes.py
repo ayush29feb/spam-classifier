@@ -47,7 +47,7 @@ def classify(filename, ham_words, spam_words, ham_count, spam_count, ham_p_mem, 
     prod_tokens_ham += math.log(p_w(token, ham_words, ham_count, ham_p_mem))
     prod_tokens_spam += math.log(p_w(token, spam_words, spam_count, spam_p_mem))
 
-  return prod_tokens_spam > (math.log(9) + prod_tokens_ham)
+  return prod_tokens_spam > (prod_tokens_ham)
 
 def test():
   ham_count = len(os.listdir(HAM_TRAIN_DIR)) * 1.0
@@ -61,4 +61,29 @@ def test():
   for email in emails:
     print email + (' spam' if classify(TEST_DIR + email, ham_words, spam_words, ham_count, spam_count, ham_p_mem, spam_p_mem) else ' ham')
 
+def spamminess():
+  ham_count = len(os.listdir(HAM_TRAIN_DIR)) * 1.0
+  spam_count = len(os.listdir(SPAM_TRAIN_DIR)) * 1.0
+  ham_words = read_emails(HAM_TRAIN_DIR)
+  spam_words = read_emails(SPAM_TRAIN_DIR)
+  ham_p_mem = {}
+  spam_p_mem = {}
+
+  all_words = []
+  all_words.extend(ham_words.keys())
+  all_words.extend(spam_words.keys())
+  all_words = set(all_words)
+
+  ret = None
+  ret_p = 0
+
+  for word in all_words:
+    p = p_w(word, spam_words, spam_count, spam_p_mem) / p_w(word, ham_words, ham_count, ham_p_mem)
+    ret = word if p > ret_p else ret
+    ret_p = p if p > ret_p else ret_p
+
+  print ret_p
+  return ret
+
 test()
+print spamminess()
