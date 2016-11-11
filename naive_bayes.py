@@ -7,7 +7,6 @@ import sys
 HAM_TRAIN_DIR = 'data/train/ham/'
 SPAM_TRAIN_DIR = 'data/train/spam/'
 TEST_DIR = 'data/test/'
-CUTOFF = 0.9
 
 # This function reads in a file and returns a 
 # set of all the tokens. It ignores the subject line
