@@ -33,10 +33,10 @@ def read_emails(dirname):
       ret[token] = 1 + ret[token] if token in ret else 1
   return ret
 
-def p_w(word, words_count, email_count, mem):
+def p_w(word, k, words_count, email_count, mem):
   if word in mem:
     return mem[word]
-  ret = (1.0 + (0 if word not in words_count else words_count[word])) / (2.0 + email_count)
+  ret = (k * 1.0 + (0 if word not in words_count else words_count[word])) / (k * 2.0 + email_count)
   mem[word] = ret
   return ret
 
@@ -45,10 +45,10 @@ def classify(filename, ham_words, spam_words, ham_count, spam_count, ham_p_mem, 
   prod_tokens_ham = math.log(ham_count / (ham_count + spam_count))
   prod_tokens_spam = math.log(spam_count / (ham_count + spam_count))
   for token in tokens:
-    prod_tokens_ham += math.log(p_w(token, ham_words, ham_count, ham_p_mem))
-    prod_tokens_spam += math.log(p_w(token, spam_words, spam_count, spam_p_mem))
+    prod_tokens_ham += math.log(p_w(token, 1, ham_words, ham_count, ham_p_mem))
+    prod_tokens_spam += math.log(p_w(token, 1, spam_words, spam_count, spam_p_mem))
 
-  return prod_tokens_spam > (prod_tokens_ham)
+  return prod_tokens_spam > (math.log(9) + prod_tokens_ham)
 
 def test():
   ham_count = len(os.listdir(HAM_TRAIN_DIR)) * 1.0
@@ -81,7 +81,7 @@ def spamminess():
   high_p = 0
 
   for word in all_words:
-    p = p_w(word, spam_words, spam_count, spam_p_mem) / p_w(word, ham_words, ham_count, ham_p_mem)
+    p = p_w(word, 1, spam_words, spam_count, spam_p_mem) / p_w(word, 1, ham_words, ham_count, ham_p_mem)
     high_w = word if p > high_p else high_w
     high_p = p if p > high_p else high_p
 
@@ -94,4 +94,4 @@ def spamminess():
   print low_w
 
 test()
-spamminess()
+# spamminess()
